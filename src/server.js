@@ -3,12 +3,18 @@ import { ENV } from "./config/env.js";
 import { favoritesTable } from "./db/schema.js";
 import { db } from "./config/db.js";
 import { and, eq } from "drizzle-orm";
+import job from './config/cron.js'
 
 const app = express();
 
 const PORT = 5001 || ENV.PORT;
 
+if(ENV.NODE_ENV==='production') job.start()
+
 app.use(express.json());
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ success: true });
+});
 
 app.post("/api/favorites", async (req, res) => {
   try {
